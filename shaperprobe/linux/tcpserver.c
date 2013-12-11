@@ -82,7 +82,9 @@ int prober_bind_port(int port)
 int create_server()
 {
 	int list_s;
-	short int port = SERV_PORT;
+	//short int port = SERV_PORT;
+	extern short int serv_port;
+	short int port = serv_port;
 	struct sockaddr_in servaddr;
 	int optval = 1;
 	int ret = 0;
@@ -484,15 +486,15 @@ double capacityEstimation(int tcpsock, int udpsock0, struct sockaddr_in *from, F
 			}
 		}
 
-		fprintf(fp, "### TRAIN ###\n");
-		for(count = 0; count < TRAIN_LENGTH; count++)
-		{
-			fprintf(fp, "%f %f %d\n", 
-					tsend[count].tv_sec+tsend[count].tv_usec*1e-6,
-					trecv[count].tv_sec+trecv[count].tv_usec*1e-6,
-					seq[count]);
-		}
-		fprintf(fp, "\n");
+		//fprintf(fp, "### TRAIN ###\n");
+		//for(count = 0; count < TRAIN_LENGTH; count++)
+		//{
+		//	fprintf(fp, "%f %f %d\n", 
+		//			tsend[count].tv_sec+tsend[count].tv_usec*1e-6,
+		//			trecv[count].tv_sec+trecv[count].tv_usec*1e-6,
+		//			seq[count]);
+		//}
+		//fprintf(fp, "\n");
 
 		gap = timeval_diff(tend, tstart); //s
 		if(sz != -1 && gap != 0)
@@ -577,7 +579,7 @@ double wlanEstimate(struct timeval *trecv, int nrecvd, FILE *fp)
 		hrecv = trecv[c+SUBTRAINLEN-1].tv_sec + trecv[c+SUBTRAINLEN-1].tv_usec*1e-6;
 		lrecv = trecv[c].tv_sec + trecv[c].tv_usec*1e-6;
 		caps[c] = (1400+UDPIPHEADERSZ)*0.008*(SUBTRAINLEN-1) / (hrecv - lrecv);
-		fprintf(fp, "caps %f\n", caps[c]);
+		//fprintf(fp, "caps %f\n", caps[c]);
 	}
 
 	for(c = 0; c < nwnds - SUBTRAINLEN; c++)
@@ -609,7 +611,7 @@ double wlanEstimate(struct timeval *trecv, int nrecvd, FILE *fp)
 					hrecv = trecv[maxindex].tv_sec + trecv[maxindex].tv_usec*1e-6;
 					lrecv = trecv[minindex].tv_sec + trecv[minindex].tv_usec*1e-6;
 					subcaps[nsubcaps++] = (1400+UDPIPHEADERSZ)*0.008*(maxindex - minindex)/(hrecv - lrecv);
-					fprintf(fp, "minindex %d maxindex %d\n", minindex, maxindex);
+					//fprintf(fp, "minindex %d maxindex %d\n", minindex, maxindex);
 				}
 			}
 			minstart = 0;
@@ -622,7 +624,7 @@ double wlanEstimate(struct timeval *trecv, int nrecvd, FILE *fp)
 		hrecv = trecv[maxindex].tv_sec + trecv[maxindex].tv_usec*1e-6;
 		lrecv = trecv[minindex].tv_sec + trecv[minindex].tv_usec*1e-6;
 		subcaps[nsubcaps++] = (1400+UDPIPHEADERSZ)*0.008*(maxindex - minindex)/(hrecv - lrecv);
-		fprintf(fp, "minindex %d maxindex %d\n", minindex, maxindex);
+		//fprintf(fp, "minindex %d maxindex %d\n", minindex, maxindex);
 	}
 
 	if(nsubcaps > 0)
