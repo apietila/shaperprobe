@@ -216,7 +216,7 @@ int prober_config_load(int argc, char **argv, char *tracefile, int *fileid)
   int c = 0;
   opterr = 0;
 
-  serverip = htonl(str2ip("143.215.129.100"));
+  serverip = htonl(str2ip("192.168.1.135"));
   //serverip = htonl(str2ip("38.102.0.111"));
 
   while ((c = getopt (argc, argv, "vh")) != -1)
@@ -321,9 +321,14 @@ int main(int argc, char *argv[])
 
   sleepRes = prober_sleep_resolution();
 
-  //tcpsock = connect2server(serverip, fileid);
-  tcpsock = selectServer(fileid);
-  if(tcpsock <= 0) printf("Server busy. Please try again later.\n");
+  if (argc == 2) {
+    printf("Connecting to %s\n",argv[1]);
+    serverip = htonl(str2ip(argv[1]));
+    tcpsock = connect2server(serverip, fileid);
+  } else {
+    tcpsock = selectServer(fileid);
+    if(tcpsock <= 0) printf("Server busy. Please try again later.\n");
+  }
   CHKRET(tcpsock);
 
   memset(&from, 0, sizeof(from));
@@ -380,6 +385,7 @@ int main(int argc, char *argv[])
   }
   truecapdown = capacitydown;
 
+  /*
   printf("\nThe measurement will last for about %.1f minutes. Please wait.\n",
 	0.5*ceil(2*(
 	(2 * (60)  // probing + low-rate
@@ -405,7 +411,7 @@ int main(int argc, char *argv[])
   unlink(filename);
 
   printf("\nFor more information, visit: http://www.cc.gatech.edu/~partha/diffprobe\n");
-
+  */
   return(0);
 }
 
