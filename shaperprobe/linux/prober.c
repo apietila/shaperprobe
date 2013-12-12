@@ -360,12 +360,17 @@ int main(int argc, char *argv[])
   capacityup = estimateCapacity(tcpsock, udpsock, &from);
   CHKRET(capacityup);
   CHKRET(sendCapEst(tcpsock));
+  printf("Upstream: %d Kbps.\n", (int)capacityup);
   capacitydown = capacityEstimation(tcpsock, udpsock, &from, fp);
   CHKRET(capacitydown);
+  printf("Downstream: %d Kbps.\n", (int)capacitydown);
 
   mflowSender(tcpsock, udpsock, &from,
 	(capacityup > 100000) ? 195000 : capacityup, sleepRes, &measupcap, 0);
   mflowReceiver(tcpsock, udpsock, &measdowncap, fp, 0);
+
+  /* Anna: Remove capacity caps and shaping test.
+
   //XXX: the meas code needs trains and lower cpu
   //following two lines for 802.11a/b/g/n links
   if(capacityup < 80000) capacityup = measupcap;
@@ -393,7 +398,6 @@ int main(int argc, char *argv[])
   }
   truecapdown = capacitydown;
 
-  /*
   printf("\nThe measurement will last for about %.1f minutes. Please wait.\n",
 	0.5*ceil(2*(
 	(2 * (60)  // probing + low-rate
